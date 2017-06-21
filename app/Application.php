@@ -48,6 +48,11 @@ class Application extends Model
         return $this->belongsTo('App\User');
     }
 
+    public function images()
+    {
+        return $this->hasMany('App\Image');
+    }
+
     public function scopeInfo($query)
 	{
     	return $query->with('status', 'user');
@@ -76,5 +81,10 @@ class Application extends Model
     public function scopeRejected($query)
 	{
     	return $query->where('status_id', 5);
+	}
+
+    public function scopeReceived($query)
+	{
+    	return $query->where('status_id', 7);
 	}
 }

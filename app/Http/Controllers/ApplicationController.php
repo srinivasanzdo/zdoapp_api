@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Application as Application;
+use App\Image as Image;
 use Illuminate\Http\Request;
 
 class ApplicationController extends Controller
@@ -29,12 +30,30 @@ class ApplicationController extends Controller
     {
         //
         $input = $request->all();
-        
-        if(Application::create($input))
+        $photo = $input["photo"];
+        unset($input["photo"]);
+
+        //return $input;
+        if($data = Application::create($input))
         {
-        	return response()->json(['status' => 1,'message' => "Application Successfully Created."]);
+            $image_flag = 0;
+            foreach ($photo as $key => $value) {
+                
+                $mrx["application_id"]=$data->id;
+                $mrx["type"]=$value["type"];
+                $mrx["path"]=$value["path"];
+
+                if(!Image::create($mrx)){
+                    $image_flag = 1;
+                }
+
+            }
+            if($image_flag){
+                return response()->json(['status' => 0,'message' => "Application Image save error."], 500);
+            }
+            return response()->json(['status' => 1,'message' => "Application Successfully Created."]);
         }
-        return response()->json(['status' => 0,'message' => "Application creation error."]);
+        return response()->json(['status' => 0,'message' => "Application creation error."], 500);
     }
 
     /**
@@ -54,7 +73,7 @@ class ApplicationController extends Controller
         if($application->fill($input)->save()){
          	return response()->json(['status' => 1,'message' => "Application Successfully Updated."]);
         }
-        return response()->json(['status' => 0,'message' => "Application updation error."]);
+        return response()->json(['status' => 0,'message' => "Application updation error."], 500);
         
     }
 
@@ -66,8 +85,28 @@ class ApplicationController extends Controller
      */
     public function show($id)
     {
-        $application = Application::info()->findOrFail($id);
+        $application = Application::info()->findOrFail($id)->toArray();
+        $images = Application::findOrFail($id)->images;
+        $applicationImages = array();
+        foreach ($images as $image) {
+            $eachImages['type'] = $image['type'];
+            $eachImages['path'] = $image['path'];
+            $applicationImages['image'][] = $eachImages;
+        }
+        $application = array_merge($application, $applicationImages);
         return \Response::json($application);
+    }
+
+    /**
+     * Get all Application
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getAllApplication()
+    {
+        $application= Application::info()->get();
+    	return \Response::json($application);
     }
 
     /**
@@ -125,7 +164,19 @@ class ApplicationController extends Controller
      */
     public function getRejectedApplication()
     {
-        $application= Application::info()->rejected()->where('user_id',$id)->get();
+        $application= Application::info()->rejected()->get();
+    	return \Response::json($application);
+    }
+
+    /**
+     * Get User all Application
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getUserAllApplication($id)
+    {
+        $application= Application::info()->where('user_id',$id)->get();
     	return \Response::json($application);
     }
 
@@ -187,4 +238,46 @@ class ApplicationController extends Controller
         $application= Application::info()->rejected()->where('user_id',$id)->get();
     	return \Response::json($application);
     }
+
+    /**
+     * Get User Received Application
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getUserReceivedApplication($id)
+    {
+        $application= Application::info()->received()->where('user_id',$id)->get();
+    	return \Response::json($application);
+    }
+
+    /**
+     * Get Group by count
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getApplicationCount()
+    {
+
+        //$user_info = Usermeta::groupBy('browser')->select('browser', DB::raw('count(*) as total'))->get();
+        $application= Application::groupBy('status_id')->select('status_id', \DB::raw('count(*) as total'))->get();
+    	return \Response::json($application);
+    }
+
+     /**
+     * Get User Group by count
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getUserApplicationCount($id)
+    {
+
+        //$user_info = Usermeta::groupBy('browser')->select('browser', DB::raw('count(*) as total'))->get();
+        $application= Application::groupBy('status_id')->select('status_id', \DB::raw('count(*) as total'))->where('user_id',$id)->get();
+    	return \Response::json($application);
+    }
+
+
 }

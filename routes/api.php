@@ -24,8 +24,11 @@ Route::middleware('jwt.auth')->get('test', 'UserController@test');
 Route::post('authenticate', 'UserController@authenticate');
 Route::middleware('jwt.auth')->get('user', 'UserController@index');
 Route::middleware('jwt.auth')->get('user/{id}', 'UserController@show');
+Route::middleware('jwt.auth')->post('user/{id}', 'UserController@update');
 Route::middleware('jwt.auth')->get('getAgentList', 'UserController@getAllAgent');
 Route::middleware('jwt.auth')->post('createAgent', 'UserController@store');
+Route::middleware('jwt.auth')->get('currentUser', 'UserController@currentUser');
+Route::middleware('jwt.auth')->post('changePassword/{id}', 'UserController@changePassword');
 
 // Role Routes
 Route::middleware('jwt.auth')->get('role', 'RoleController@index');
@@ -37,4 +40,23 @@ Route::middleware('jwt.auth')->get('status', 'StatusController@index');
 Route::middleware('jwt.auth')->post('status', 'StatusController@store');
 Route::middleware('jwt.auth')->get('status/{id}', 'StatusController@show');
 
+
+Route::middleware('jwt.auth')->post('application', 'ApplicationController@store');
+Route::middleware('jwt.auth')->post('updateApplication/{id}', 'ApplicationController@update');
+Route::middleware('jwt.auth')->get('getApplication/{id}', 'ApplicationController@show');
+Route::middleware('jwt.auth')->get('getAllApplication', 'ApplicationController@getAllApplication');
+Route::middleware('jwt.auth')->get('getPendingApplication', 'ApplicationController@getPendingApplication');
+Route::middleware('jwt.auth')->get('getAmendApplication', 'ApplicationController@getAmendApplication');
+Route::middleware('jwt.auth')->get('getDraftApplication', 'ApplicationController@getDraftApplication');
+Route::middleware('jwt.auth')->get('getApprovedApplication', 'ApplicationController@getApprovedApplication');
+Route::middleware('jwt.auth')->get('getRejectedApplication', 'ApplicationController@getRejectedApplication');
+Route::middleware('jwt.auth')->get('getUserAllApplication/{id}', 'ApplicationController@getUserAllApplication');
+Route::middleware('jwt.auth')->get('getUserPendingApplication/{id}', 'ApplicationController@getUserPendingApplication');
+Route::middleware('jwt.auth')->get('getUserAmendApplication/{id}', 'ApplicationController@getUserAmendApplication');
+Route::middleware('jwt.auth')->get('getUserDraftApplication/{id}', 'ApplicationController@getUserDraftApplication');
+Route::middleware('jwt.auth')->get('getUserApprovedApplication/{id}', 'ApplicationController@getUserApprovedApplication');
+Route::middleware('jwt.auth')->get('getUserRejectedApplication/{id}', 'ApplicationController@getUserRejectedApplication');
+Route::middleware('jwt.auth')->get('getUserReceivedApplication/{id}', 'ApplicationController@getUserReceivedApplication');
+Route::middleware('jwt.auth')->get('getApplicationCount', 'ApplicationController@getApplicationCount');
+Route::middleware('jwt.auth')->get('getUserApplicationCount/{id}', 'ApplicationController@getUserApplicationCount');
 

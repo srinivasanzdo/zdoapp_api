@@ -34,7 +34,7 @@ class RoleController extends Controller
         {
         	return response()->json(['status' => 1,'message' => "Role Successfully Created."]);
         }
-        return response()->json(['status' => 0,'message' => "Role creation error."]);
+        return response()->json(['status' => 0,'message' => "Role creation error."], 500);
     }
 
     /**
