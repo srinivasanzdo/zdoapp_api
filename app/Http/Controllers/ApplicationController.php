@@ -169,6 +169,18 @@ class ApplicationController extends Controller
     }
 
     /**
+     * Get all Resubmit Application
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function getResubmitApplication()
+    {
+        $application= Application::info()->resubmit()->get();
+    	return \Response::json($application);
+    }
+
+    /**
      * Get User all Application
      *
      * @param  \Illuminate\Http\Request  $request

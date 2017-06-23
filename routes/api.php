@@ -50,6 +50,7 @@ Route::middleware('jwt.auth')->get('getAmendApplication', 'ApplicationController
 Route::middleware('jwt.auth')->get('getDraftApplication', 'ApplicationController@getDraftApplication');
 Route::middleware('jwt.auth')->get('getApprovedApplication', 'ApplicationController@getApprovedApplication');
 Route::middleware('jwt.auth')->get('getRejectedApplication', 'ApplicationController@getRejectedApplication');
+Route::middleware('jwt.auth')->get('getResubmitApplication', 'ApplicationController@getResubmitApplication');
 Route::middleware('jwt.auth')->get('getUserAllApplication/{id}', 'ApplicationController@getUserAllApplication');
 Route::middleware('jwt.auth')->get('getUserPendingApplication/{id}', 'ApplicationController@getUserPendingApplication');
 Route::middleware('jwt.auth')->get('getUserAmendApplication/{id}', 'ApplicationController@getUserAmendApplication');

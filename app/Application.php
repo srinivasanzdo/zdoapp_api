@@ -83,6 +83,11 @@ class Application extends Model
     	return $query->where('status_id', 5);
 	}
 
+    public function scopeResubmit($query)
+	{
+    	return $query->where('rejected', "Yes");
+	}
+
     public function scopeReceived($query)
 	{
     	return $query->where('status_id', 7);
