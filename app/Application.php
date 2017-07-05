@@ -11,7 +11,8 @@ class Application extends Model
      *
      * @var array
      */
-    protected $fillable = ['name',
+    protected $fillable = ['application_no',
+                           'name',
                            'gender',
                            'nric',
                            'dob',
@@ -56,6 +57,11 @@ class Application extends Model
     public function scopeInfo($query)
 	{
     	return $query->with('status', 'user');
+	}
+
+    public function scopeInfoadmin($query)
+	{
+    	return $query->with('status', 'user')->where('status_id','!=',3)->where('status_id','!=',7);
 	}
 
     public function scopePending($query)

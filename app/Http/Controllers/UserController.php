@@ -6,6 +6,7 @@ use App\User as User;
 use Illuminate\Http\Request;
 use JWTAuth;
 use Auth;
+use Mail;
 
 class UserController extends Controller
 {
@@ -163,5 +164,40 @@ class UserController extends Controller
           
     }
 
+    public function checkmail(){
 
+        $content = "Hi,welcome user!";
+
+        $data = [
+            'content' => $content
+        ];
+
+        Mail:: raw('mail-template', function($message){
+            $message->from('sivakvaij@gmail.com');
+            $message->to('mrxzdo@gmail.com');
+            $message->subject('Test Mail');
+        });
+
+    }
+
+    public function forgotPassword(Request $request){
+        $user = User::where('email', '=' ,$request['email'])->first();
+        if($user){
+            $randomNum=substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 0, 11);
+            $user->password = $randomNum;
+            $user->save();
+            $content = "Your new password is ". $randomNum ;
+            Mail:: raw($content, function($message)  use ($request){
+                $message->from('sivakavij@gmail.com', 'ZDO');
+                $message->to($request['email']);
+                $message->subject('Reset Password');
+            });
+            if (Mail::failures()) {
+                return response()->json(['status' => 1,'message' => "Mail not working contact your Admin."]);
+            }
+            return response()->json(['status' => 1,'message' => "Password reset completed . Check your mail.."]);
+        }else{
+           return response()->json(['status' => 0,'message' => "User does not exist."]); 
+        }
+    }
 }
