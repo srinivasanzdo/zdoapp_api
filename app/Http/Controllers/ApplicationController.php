@@ -181,7 +181,7 @@ class ApplicationController extends Controller
 
         }
 
-        $mailcontent = 'Dear Agent,\r\n Your application for '. $applicationDetail["name"] .' & NO has been '. $st;
+        $mailcontent = 'Dear Agent,\r\n Your application for '. $applicationDetail["name"] .' & '. $applicationDetail["application_no"] .' has been '. $st;
         $toemail = $applicationDetail["user"]["email"];
 
         if(array_key_exists("photo",$input)){

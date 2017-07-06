@@ -80,12 +80,19 @@ class UserController extends Controller
     {
         //
         $input = $request->all();
-        
-        if(User::create($input))
-        {
-        	return response()->json(['status' => 1,'message' => "Agent Successfully Created."]);
+
+        $user = User::where('email', '=' ,$input["email"]);
+
+        if($user){
+            return response()->json(['status' => 1,'message' => "Email id already exist."]);
+        }else{
+            if(User::create($input))
+            {
+                return response()->json(['status' => 1,'message' => "Agent Successfully Created."]);
+            }
+            return response()->json(['status' => 0,'message' => "Agent creation error."],500);
         }
-        return response()->json(['status' => 0,'message' => "Agent creation error."],500);
+        
     }
 
     /**
