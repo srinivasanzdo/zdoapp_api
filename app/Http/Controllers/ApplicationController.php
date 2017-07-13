@@ -37,7 +37,7 @@ class ApplicationController extends Controller
         }
 
         if(Link::create($input)){
-            $content = $resend_content . "\r\n\r\n" . "Your application link  is ". $full_link ;
+            $content ="Remark : " . $resend_content . "\r\n\r\n" . "Your application link  is ". $full_link ;
             Mail:: raw($content, function($message)  use ($tomail){
                 $message->from('sivakavij@gmail.com', 'ZDO');
                 $message->to($tomail);
@@ -181,7 +181,10 @@ class ApplicationController extends Controller
 
         }
 
-        $mailcontent = 'Dear Agent,\r\n Your application for '. $applicationDetail["name"] .' & '. $applicationDetail["application_no"] .' has been '. $st;
+        $name = $applicationDetail["name"];
+        $appno = $applicationDetail["application_no"];
+
+        $mailcontent = "Dear Agent ," . "\r\n\r\n" . " Your application for " . $name . " & " . $appno . " has been " . $st;
         $toemail = $applicationDetail["user"]["email"];
 
         if(array_key_exists("photo",$input)){
@@ -214,6 +217,20 @@ class ApplicationController extends Controller
                 });
             }
 
+         	return response()->json(['status' => 1,'message' => "Application Successfully Updated."]);
+        }
+        return response()->json(['status' => 0,'message' => "Application updation error."], 500);
+        
+    }
+
+    public function updateStatus(Request $request, $id)
+    {
+        //
+        $application = Application::findOrFail($id);
+
+        $input = $request->all();
+       
+        if($application->fill($input)->save()){
          	return response()->json(['status' => 1,'message' => "Application Successfully Updated."]);
         }
         return response()->json(['status' => 0,'message' => "Application updation error."], 500);

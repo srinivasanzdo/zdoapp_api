@@ -54,6 +54,7 @@ Route::middleware('jwt.auth')->post('sendEmailLink', 'ApplicationController@send
 Route::middleware('jwt.auth')->post('sendWhatsappLink', 'ApplicationController@sendLinkWhatsapp');
 Route::get('linkDetail/{li}', 'ApplicationController@linkDetail');
 Route::middleware('jwt.auth')->post('updateApplication/{id}', 'ApplicationController@update');
+Route::middleware('jwt.auth')->post('updateStatusApplication/{id}', 'ApplicationController@updateStatus');
 Route::post('editapplicationSubmit/{id}', 'ApplicationController@editapplicationFormSubmit');
 Route::middleware('jwt.auth')->get('getApplication/{id}', 'ApplicationController@show');
 Route::get('getApplicationwithouttoken/{id}', 'ApplicationController@show');

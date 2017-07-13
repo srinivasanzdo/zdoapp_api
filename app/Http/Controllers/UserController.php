@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use JWTAuth;
 use Auth;
 use Mail;
+use Hash;
 
 class UserController extends Controller
 {
@@ -81,7 +82,7 @@ class UserController extends Controller
         //
         $input = $request->all();
 
-        $user = User::where('email', '=' ,$input["email"]);
+        $user = User::where('email' , '=', $input["email"])->first();
 
         if($user){
             return response()->json(['status' => 1,'message' => "Email id already exist."]);
@@ -162,13 +163,20 @@ class UserController extends Controller
     }
 
     public function changePassword(Request $request, $id){
-        //$user = User::info()->findOrFail($id);
-        if (Auth::check())
-        {
-            $user = User::find(Auth::user()->id);
-            return $user;
-        }
-          
+
+            $input = $request->all();
+        
+            $user = User::find($id);
+            $old_password = $user->password;
+
+            if (Hash::check($input["old_password"], $old_password)) {
+                $user->password = $input["new_password"];
+                $user->save();
+                return response()->json(['status' => 1,'message' => "Password reset completed..."]);
+            }else{
+                return response()->json(['status' => 0,'message' => "Old password Wrong..."]);
+            }
+            
     }
 
     public function checkmail(){
@@ -190,7 +198,7 @@ class UserController extends Controller
     public function forgotPassword(Request $request){
         $user = User::where('email', '=' ,$request['email'])->first();
         if($user){
-            $randomNum=substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyz"), 0, 11);
+            $randomNum=substr(str_shuffle("0123456789abcdefghijklmnopqrstvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, 11);
             $user->password = $randomNum;
             $user->save();
             $content = "Your new password is ". $randomNum ;
